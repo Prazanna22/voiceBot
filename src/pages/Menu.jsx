@@ -1,79 +1,58 @@
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import smallparty from '../assets/smallparty.jpg'; 
+import birthday from '../assets/birthday.jpg'; 
+import bbq from '../assets/bbq.jpg'; 
+import cafe from '../assets/cafe.jpg'; 
+import marriage from '../assets/marriage.jpg'; 
 
+
+const eventTypes = [
+  { name: "marriage", image: marriage },
+  { name: "bbq-ride", image: bbq },
+  { name: "birthday", image: birthday },
+  { name: "cafeteria", image: cafe },
+  { name: "smallparty", image:  smallparty },
+];
 
 export default function Menu() {
+  const navigate = useNavigate();
 
-  const menuData = {
-    breakfast: [
-      { item: "Idli with Sambar", qty: "2 pieces", notes: "Includes chutney", price: 30 },
-      { item: "Pongal", qty: "150g", notes: "With ghee & pepper flavor", price: 40 },
-      { item: "Vada", qty: "1 piece", notes: "With coconut chutney", price: 20 },
-    ],
-    lunch: [
-      { item: "Veg Biryani", qty: "250g", notes: "Served with raitha", price: 90 },
-      { item: "Chapati with Paneer Butter Masala", qty: "2 pieces", notes: "Soft & fresh", price: 80 },
-      { item: "Curd Rice", qty: "200g", notes: "Garnished with coriander", price: 50 },
-    ],
-    dinner: [
-      { item: "Dosa", qty: "2 pieces", notes: "With chutney & sambar", price: 60 },
-      { item: "Upma", qty: "150g", notes: "With lemon pickle", price: 40 },
-      { item: "Gulab Jamun", qty: "1 piece", notes: "Sweet dessert", price: 30 },
-    ],
-  };
-  const [selected, setSelected] = useState("breakfast");
+  useEffect(() => {
+    const handleVoiceIntent = (event) => {
+      const data = event.detail;
+      if (data.intent === "navigate_to_menu" && data.menu_name) {
+        const menuSlug = data.menu_name.toLowerCase().replace(/\s/g, "-");
+        navigate(`/menu/${menuSlug}`);
+      }
+    };
 
-  // Calculate total per head based on selected meal
-  const totalPerHead = menuData[selected].reduce((sum, food) => sum + food.price, 0);
+    window.addEventListener("voice-command", handleVoiceIntent);
+
+    return () => {
+      window.removeEventListener("voice-command", handleVoiceIntent);
+    };
+  }, [navigate]);
 
   return (
-    <div className="max-w-5xl mx-auto mt-10 p-6 bg-white rounded-2xl shadow-lg">
-      <h1 className="text-3xl font-bold text-center mb-6">Bulk Food Pricing (Per Head)</h1>
-
-      <div className="flex justify-center gap-6 mb-6">
-        {["breakfast", "lunch", "dinner"].map((meal) => (
-          <button
-            key={meal}
-            className={`px-5 py-2 rounded-xl font-semibold capitalize ${
-              selected === meal
-                ? "bg-red-500 text-white"
-                : "bg-gray-200 text-gray-700"
-            }`}
-            onClick={() => setSelected(meal)}
-          >
-            {meal}
-          </button>
-        ))}
-      </div>
-
-      <div className="overflow-x-auto mb-6">
-        <table className="w-full border border-gray-300 rounded-xl">
-          <thead className="bg-green-100">
-            <tr>
-              <th className="px-4 py-2 text-left">Item</th>
-              <th className="px-4 py-2 text-left">Quantity</th>
-              <th className="px-4 py-2 text-left">Notes</th>
-              <th className="px-4 py-2 text-left">Price (₹)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {menuData[selected].map((food, index) => (
-              <tr key={index} className="border-t">
-                <td className="px-4 py-2">{food.item}</td>
-                <td className="px-4 py-2">{food.qty}</td>
-                <td className="px-4 py-2">{food.notes}</td>
-                <td className="px-4 py-2">₹{food.price}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="text-center mt-6">
-        <h2 className="text-2xl font-bold">
-          Total Price Per Head: <span className="text-red-500">₹{totalPerHead}</span>
-        </h2>
-        <p className="text-gray-600 mt-2">(Inclusive of all items listed above)</p>
-      </div>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 max-w-6xl mx-auto">
+      {eventTypes.map((event) => (
+        <div
+          key={event.name}
+          className="relative group rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
+        >
+          <img src={event.image} alt={event.name} className="w-full h-64 object-cover" />
+          <div className="absolute inset-0  bg-opacity-40 group-hover:bg-opacity-60 flex items-center justify-center transition">
+            <button
+              onClick={() => navigate(`/menu/${event.name.replace(/\s/g, "-")}`)}
+              className="opacity-0 group-hover:opacity-100 bg-white text-black px-5 py-2 rounded-full font-semibold transition"
+            >
+              Menu
+            </button>
+          </div>
+          <h2 className="text-center my-2 text-md uppercase font-bold">{event.name}</h2>
+        </div>
+      ))}
     </div>
   );
 }

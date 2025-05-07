@@ -15,7 +15,7 @@ const Chatbot = () => {
       offset: "40px",
       width: "50px",
       height: "50px",
-      outline:"none",
+      outline: "none",
       idle: {
         color: "rgb(93, 254, 202)",
         type: "pill",
@@ -51,6 +51,7 @@ const Chatbot = () => {
       document.body.appendChild(script);
 
       script.onload = () => {
+        
         if (!vapiInstance && window.vapiSDK) {
           vapiInstance = window.vapiSDK.run({
             apiKey: apiKey,
@@ -58,53 +59,70 @@ const Chatbot = () => {
             config: buttonConfig
           });
 
-          vapiInstance.start();
-
+          setTimeout(() => {
+            try {
+              vapiInstance.start();
+            } catch (err) {
+              console.error("❌ Failed to start Vapi:", err.message);
+            }
+          }, 1000);
+          
+          
           vapiInstance.on('message', (msg) => {
             const transcript = msg.transcript || "";
-          
+
             try {
               const cleaned = transcript.trim().toLowerCase();
-          
+
               if (cleaned.startsWith("{") && cleaned.endsWith("}")) {
                 const data = JSON.parse(cleaned);
-          
+
                 // ✅ Handling JSON navigation
                 if (data.action === 'navigate' && data.target) {
                   console.log("Navigation triggered to:", data.target);
                   navigate(data.target);
-          
+
                   // ✅ Prevent speaking this JSON
                   return;  // 🚀 VERY IMPORTANT: Stop here if it's a JSON action
                 } else if (data.action === 'scroll' && data.target) {
                   document.querySelector(data.target)?.scrollIntoView({ behavior: 'smooth' });
-          
+
                   return;  // 🚀 Stop after scroll too
                 }
               }
-          
+
               // ✅ Only if NOT JSON — handle normal speech
-              if (cleaned.includes("pricing")) {
-                navigate("/pricing");
+              if (cleaned.includes("home")) {
+                navigate("/");
               }
               else if (cleaned.includes("menu")) {
+                const menuSlugMap = {
+                  "small party menu": "smallparty",
+                  "bbq ride menu": "bbq-ride",
+                  "birthday menu": "birthday",
+                  "cafeteria menu": "cafeteria",
+                  "marriage menu": "marriage"
+                };
+
+                for (const key in menuSlugMap) {
+                  if (cleaned.includes(key)) {
+                    console.log("🎯 Navigating to:", menuSlugMap[key]);
+                    navigate(`/menu/${menuSlugMap[key]}`);
+                    return;
+                  }
+                }
                 navigate("/menu");
               }
-              else if (cleaned.includes("about")) {
-                navigate("/about");
-              }
+
               else if (cleaned.includes("contact")) {
                 navigate("/contact");
               }
-              else if (cleaned.includes("home")) {
-                navigate("/");
-              }
-          
+
             } catch (e) {
               console.error("⚠️ JSON parsing failed:", e);
             }
           });
-          
+
         }
       };
     } else {
