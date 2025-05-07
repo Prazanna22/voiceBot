@@ -117,6 +117,14 @@ const Chatbot = () => {
               else if (cleaned.includes("contact")) {
                 navigate("/contact");
               }
+              else if (cleaned.includes("features")) {
+                navigate("/features");
+              }
+              else if (cleaned.includes("services")) {
+                navigate("/services");
+              }
+
+
 
             } catch (e) {
               console.error("⚠️ JSON parsing failed:", e);
