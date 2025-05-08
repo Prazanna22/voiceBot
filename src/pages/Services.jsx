@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 
 const features = [
     {
@@ -33,7 +32,6 @@ const features = [
     }
 ];
 export default function Services() {
-    const navigate =useNavigate();
     return (
         <div className=" py-16 px-4 md:px-10">
             {/* Section Title */}
@@ -42,6 +40,11 @@ export default function Services() {
                 <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900">
                     And we provide the Solution for
                 </h2>
+                <div className="flex justify-center my-10 gap-60">
+                    <h1 className="text-red-600 font-semibold border-2 hover:text-xl transition-all border-red-600 py-2 px-4 rounded-full">Service Catering</h1>
+                    <h1 className="text-red-600 font-semibold border-2 hover:text-xl transition-all border-red-600 py-2 px-4 rounded-full">Industrial Catering</h1>
+                    <h1 className="text-red-600 font-semibold border-2 hover:text-xl transition-all border-red-600 py-2 px-4 rounded-full">Outdoor Catering</h1>
+                </div>
             </div>
 
             {/* Solutions Grid */}

@@ -13,12 +13,12 @@ function App() {
     <Router>
       <div>
         {/* Navigation Menu */}
-        <nav className="flex justify-center sticky top-0 gap-10 py-5 bg-red-500 text-white">
+        <nav className="flex justify-center sticky top-0 gap-10 py-5 z-50 bg-red-500 text-white">
           <Link to="/" className="text-lg font-semibold">Home</Link>
           <Link to="/menu" className="text-lg font-semibold">Menu</Link>
-          <Link to="/contact" className="text-lg font-semibold">Contact</Link>
           <Link to="/features" className="text-lg font-semibold">Features</Link>
           <Link to="/services" className="text-lg font-semibold">Services</Link>
+          <Link to="/contact" className="text-lg font-semibold">Contact</Link>
         </nav>
 
         {/* Page Routes */}

@@ -112,6 +112,7 @@ const Chatbot = () => {
                   }
                 }
                 navigate("/menu");
+                return
               }
 
               else if (cleaned.includes("contact")) {
