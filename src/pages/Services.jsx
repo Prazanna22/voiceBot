@@ -41,7 +41,7 @@ export default function Services() {
                     And we provide the Solution for
                 </h2>
                 <div className="flex justify-center my-10 gap-60">
-                    <h1 className="text-red-600 font-semibold border-2 hover:text-xl transition-all border-red-600 py-2 px-4 rounded-full">Service Catering</h1>
+                    <h1 className="text-red-600 font-semibold border-2 hover:text-xl transition-all border-red-600 py-2 px-4 rounded-full">Corperate Catering</h1>
                     <h1 className="text-red-600 font-semibold border-2 hover:text-xl transition-all border-red-600 py-2 px-4 rounded-full">Industrial Catering</h1>
                     <h1 className="text-red-600 font-semibold border-2 hover:text-xl transition-all border-red-600 py-2 px-4 rounded-full">Outdoor Catering</h1>
                 </div>
