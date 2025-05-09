@@ -73,11 +73,11 @@ const Chatbot = () => {
             const cleaned = transcript.trim().toLowerCase();
             const now = Date.now();
 
-            // ❌ If bot just spoke, ignore next few seconds (to prevent echo redirect)
+            // Prevent bot echo trigger
             if (now - lastBotSpeakTime < 3000) return;
 
             try {
-              // Handle JSON control
+              // JSON handling
               if (cleaned.startsWith("{") && cleaned.endsWith("}")) {
                 const data = JSON.parse(cleaned);
                 if (data.action === "navigate" && data.target) {
@@ -90,18 +90,18 @@ const Chatbot = () => {
                 }
               }
 
-              // Handle confirmation
+              // Confirmations
               if (pendingAction) {
                 if (
                   cleaned.includes("yes") ||
                   cleaned.includes("go ahead") ||
-                  cleaned.includes("show") ||
                   cleaned.includes("okay") ||
                   cleaned.includes("open") ||
-                  cleaned.includes("go to")||
-                  cleaned.includes("take me to") ||
+                  cleaned.includes("sure") ||
+                  cleaned.includes("show") ||
+                  cleaned.includes("go to") ||
                   cleaned.includes("navigate") ||
-                  cleaned.includes("show me") ||
+                  cleaned.includes("take me") ||
                   cleaned.includes("yeah") 
                 ) {
                   const target = pendingAction.split("navigate:")[1];
@@ -113,66 +113,64 @@ const Chatbot = () => {
                   return;
                 }
 
-                if (cleaned.includes("no") || cleaned.includes("not now")) {
+                if (cleaned.includes("no") || cleaned.includes("not now") || cleaned.includes("illa")) {
                   pendingAction = null;
                   return;
                 }
               }
 
-              // Suggestions (only if no pending action)
-              if (!pendingAction) {
-                if (cleaned.includes("services")) {
-                  pendingAction = "navigate:/services";
-                  vapiInstance?.speak("Do you want to see our services page?");
-                  lastBotSpeakTime = Date.now();
-                  return;
-                }
+              // Suggestions (ask, don't navigate)
+              if (cleaned.includes("services")) {
+                pendingAction = "navigate:/services";
+                vapiInstance?.speak("Do you want to see our services page?");
+                lastBotSpeakTime = Date.now();
+                return;
+              }
 
-                if (cleaned.includes("features")) {
-                  pendingAction = "navigate:/features";
-                  vapiInstance?.speak("Would you like to check our features?");
-                  lastBotSpeakTime = Date.now();
-                  return;
-                }
+              if (cleaned.includes("features")) {
+                pendingAction = "navigate:/features";
+                vapiInstance?.speak("Would you like to check our features?");
+                lastBotSpeakTime = Date.now();
+                return;
+              }
 
-                if (cleaned.includes("contact")) {
-                  pendingAction = "navigate:/contact";
-                  vapiInstance?.speak("Should I take you to the contact page?");
-                  lastBotSpeakTime = Date.now();
-                  return;
-                }
+              if (cleaned.includes("contact")) {
+                pendingAction = "navigate:/contact";
+                vapiInstance?.speak("Should I take you to the contact page?");
+                lastBotSpeakTime = Date.now();
+                return;
+              }
 
-                if (cleaned.includes("home")) {
-                  pendingAction = "navigate:/";
-                  vapiInstance?.speak("Do you want to go to the home page?");
-                  lastBotSpeakTime = Date.now();
-                  return;
-                }
+              if (cleaned.includes("home")) {
+                pendingAction = "navigate:/";
+                vapiInstance?.speak("Do you want to go to the home page?");
+                lastBotSpeakTime = Date.now();
+                return;
+              }
 
-                if (cleaned.includes("menu")) {
-                  const menuSlugMap = {
-                    "small party menu": "smallparty",
-                    "bbq ride menu": "bbq-ride",
-                    "birthday menu": "birthday",
-                    "cafeteria menu": "cafeteria",
-                    "marriage menu": "marriage"
-                  };
+              if (cleaned.includes("menu")) {
+                const menuSlugMap = {
+                  "small party menu": "smallparty",
+                  "bbq ride menu": "bbq-ride",
+                  "birthday menu": "birthday",
+                  "cafeteria menu": "cafeteria",
+                  "marriage menu": "marriage"
+                };
 
-                  for (const key in menuSlugMap) {
-                    if (cleaned.includes(key)) {
-                      const slug = menuSlugMap[key];
-                      pendingAction = `navigate:/menu/${slug}`;
-                      vapiInstance?.speak(`Do you want to see the ${key} page?`);
-                      lastBotSpeakTime = Date.now();
-                      return;
-                    }
+                for (const key in menuSlugMap) {
+                  if (cleaned.includes(key)) {
+                    const slug = menuSlugMap[key];
+                    pendingAction = `navigate:/menu/${slug}`;
+                    vapiInstance?.speak(`Do you want to see the ${key} page?`);
+                    lastBotSpeakTime = Date.now();
+                    return;
                   }
-
-                  pendingAction = "navigate:/menu";
-                  vapiInstance?.speak("Would you like to view our menu?");
-                  lastBotSpeakTime = Date.now();
-                  return;
                 }
+
+                pendingAction = "navigate:/menu";
+                vapiInstance?.speak("Would you like to view our menu?");
+                lastBotSpeakTime = Date.now();
+                return;
               }
 
             } catch (e) {
